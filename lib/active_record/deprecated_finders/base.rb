@@ -4,17 +4,15 @@ module ActiveRecord
   module DeprecatedFinders
     class ScopeWrapper
       def self.wrap(klass, scope)
+        message =
+          "Calling #scope or #default_scope with a hash is deprecated. Please use a lambda containing a scope." \
+          "E.g. scope :red, -> { where(color: 'red') }. Exception is raised because of: https://github.com/rails/rails/issues/10864."
         if scope.is_a?(Hash)
-          ActiveSupport::Deprecation.warn(
-            "Calling #scope or #default_scope with a hash is deprecated. Please use a lambda " \
-            "containing a scope. E.g. scope :red, -> { where(color: 'red') }"
-          )
-
-          new(klass, scope)
+          raise ArgumentError, message
         elsif !scope.is_a?(Relation) && scope.respond_to?(:call)
           new(klass, scope)
         else
-          scope
+          raise ArgumentError, message
         end
       end
 
