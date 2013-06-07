@@ -14,18 +14,10 @@ describe 'default scope' do
     Post.delete_all
   end
 
-  it 'works with a finder hash' do
-    assert_deprecated { @klass.default_scope conditions: { id: 1 } }
-    @klass.all.map(&:id).must_equal [1]
-  end
-
-  it 'works with a finder hash and a scope' do
-    @klass.default_scope { @klass.where("title like '%foo%'") }
-    ActiveSupport::Deprecation.silence do
-      @klass.default_scope conditions: "title like '%omg%'"
-    end
-
-    @klass.all.map(&:id).must_equal [2]
+  it 'raise exception with a finder hash' do
+    lambda{
+      @klass.default_scope conditions: { id: 1 }
+    }.must_raise ArgumentError
   end
 
   it 'works with a block that returns a hash' do

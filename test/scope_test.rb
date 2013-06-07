@@ -5,9 +5,10 @@ describe 'scope' do
     @klass = Class.new(ActiveRecord::Base)
   end
 
-  it 'supports a finder hash' do
-    assert_deprecated { @klass.scope :foo, conditions: :foo }
-    @klass.foo.where_values.must_equal [:foo]
+  it 'raise exception with a finder hash' do
+    lambda{
+      @klass.scope :foo, conditions: :foo
+    }.must_raise ArgumentError
   end
 
   it 'supports a finder hash inside a callable' do
